@@ -4,6 +4,12 @@ import AppointmentModal from "../components/AppointmentModal";
 import WelcomeCard from "../components/WelcomeCard";
 import MemoriesSection from "../components/MemoriesSection";
 import LoveStats from "../components/LoveStats";
+import { db } from "../firebase";
+import {
+  collection,
+  addDoc,
+} from "firebase/firestore";
+
 
 type Appointment = {
   id: number;
@@ -37,30 +43,57 @@ export default function Home() {
     );
   }, [appointments]);
 
-  function addAppointment() {
-    if (!title || !date) return;
+  async function addAppointment() {
+  if (!title || !date) return;
 
-    const newAppointment: Appointment = {
-      id: Date.now(),
-      title,
-      date,
-      location,
-      notes,
-      emoji,
-      favorite,
-    };
+  const newAppointment: Appointment = {
+    id: Date.now(),
+    title,
+    date,
+    location,
+    notes,
+    emoji,
+    favorite,
+  };
 
-    setAppointments((prev) => [...prev, newAppointment]);
+  try {
+    console.log("Sto salvando su Firebase");
 
-    setTitle("");
-    setDate("");
-    setLocation("");
-    setNotes("");
-    setEmoji("💖");
-    setFavorite(false);
+    await addDoc(
+      collection(db, "appointments"),
+      {
+        title,
+        date,
+        location,
+        notes,
+        emoji,
+        favorite,
+        createdAt: Date.now(),
+      }
+    );
 
-    setShowModal(false);
+    console.log("Salvato!");
+  } catch (error) {
+    console.error(
+      "Errore Firebase:",
+      error
+    );
   }
+
+  setAppointments((prev) => [
+    ...prev,
+    newAppointment,
+  ]);
+
+  setTitle("");
+  setDate("");
+  setLocation("");
+  setNotes("");
+  setEmoji("💖");
+  setFavorite(false);
+
+  setShowModal(false);
+}
 
   function deleteAppointment(id: number) {
     setAppointments((prev) =>
