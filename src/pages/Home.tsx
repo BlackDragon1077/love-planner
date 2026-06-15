@@ -8,6 +8,9 @@ import { db } from "../firebase";
 import {
   collection,
   addDoc,
+  onSnapshot,
+  query,
+  orderBy,
 } from "firebase/firestore";
 
 
@@ -31,30 +34,34 @@ export default function Home() {
   const [emoji, setEmoji] = useState("💖");
   const [favorite, setFavorite] = useState(false);
 
-  const [appointments, setAppointments] = useState<Appointment[]>(() => {
-    const saved = localStorage.getItem("appointments");
-    return saved ? JSON.parse(saved) : [];
+const [appointments, setAppointments] = useState<Appointment[]>([]);
+useEffect(() => {
+  const q = query(
+    collection(db, "appointments"),
+    orderBy("createdAt", "desc")
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const data: Appointment[] = snapshot.docs.map((doc) => ({
+      id: Number(doc.id.replace(/\D/g, "")) || Date.now(),
+      title: doc.data().title || "",
+      date: doc.data().date || "",
+      location: doc.data().location || "",
+      notes: doc.data().notes || "",
+      emoji: doc.data().emoji || "💖",
+      favorite: doc.data().favorite || false,
+    }));
+
+    setAppointments(data);
   });
 
-  useEffect(() => {
-    localStorage.setItem(
-      "appointments",
-      JSON.stringify(appointments)
-    );
-  }, [appointments]);
+  return () => unsubscribe();
+}, []);
 
   async function addAppointment() {
   if (!title || !date) return;
 
-  const newAppointment: Appointment = {
-    id: Date.now(),
-    title,
-    date,
-    location,
-    notes,
-    emoji,
-    favorite,
-  };
+  
 
   try {
     console.log("Sto salvando su Firebase");
@@ -80,10 +87,7 @@ export default function Home() {
     );
   }
 
-  setAppointments((prev) => [
-    ...prev,
-    newAppointment,
-  ]);
+
 
   setTitle("");
   setDate("");
