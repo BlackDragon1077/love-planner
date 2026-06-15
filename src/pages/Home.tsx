@@ -145,132 +145,125 @@ export default function Home() {
       ? "È oggi! ❤️"
       : `${daysUntilNext} giorni`;
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white p-6">
+return (
+  <div className="min-h-screen bg-black text-white overflow-x-hidden">
+
+    <div className="fixed inset-0 pointer-events-none">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-violet-600/20 blur-[220px]" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-pink-500/10 blur-[180px]" />
+    </div>
+
+    <div className="relative max-w-5xl mx-auto px-4 py-6 pb-32">
+
+      <div className="flex items-start justify-between mb-8">
+
+        <div>
+          <p className="text-zinc-500 text-sm mb-2">
+            Il vostro spazio privato ❤️
+          </p>
+
+          <h1 className="text-3xl md:text-5xl font-bold">
+            Love Planner
+          </h1>
+        </div>
+
+        <button
+          onClick={logout}
+          className="
+            w-11
+            h-11
+            rounded-xl
+            bg-zinc-900/80
+            border
+            border-zinc-800
+            hover:border-zinc-600
+            transition
+          "
+        >
+          🚪
+        </button>
+
+      </div>
+
+      <WelcomeCard name="Alice" />
 
       <div
         className="
-          fixed
-          top-0
-          left-1/2
-          -translate-x-1/2
-          w-[500px]
-          h-[500px]
-          bg-violet-500/20
-          blur-[180px]
-          pointer-events-none
+          mt-6
+          rounded-3xl
+          border
+          border-violet-500/20
+          bg-zinc-900/70
+          backdrop-blur-xl
+          p-6
+          mb-6
         "
+      >
+        <p className="text-zinc-400 text-sm">
+          PROSSIMO APPUNTAMENTO
+        </p>
+
+        {nextAppointment ? (
+          <>
+            <h2 className="text-2xl md:text-4xl font-bold mt-3">
+              {nextAppointment.emoji} {nextAppointment.title}
+            </h2>
+
+            <p className="text-zinc-400 mt-3">
+              📅 {nextAppointment.date}
+            </p>
+
+            {nextAppointment.location && (
+              <p className="text-zinc-400 mt-1">
+                📍 {nextAppointment.location}
+              </p>
+            )}
+
+            <div
+              className="
+                mt-5
+                inline-flex
+                px-4
+                py-2
+                rounded-full
+                bg-pink-500/10
+                border
+                border-pink-500/20
+                text-pink-400
+                font-semibold
+              "
+            >
+              ⏳ {countdownText}
+            </div>
+          </>
+        ) : (
+          <p className="text-zinc-400 mt-4">
+            Nessun appuntamento programmato
+          </p>
+        )}
+      </div>
+
+      <LoveStats
+        daysTogether={daysTogether}
+        appointmentsCount={appointments.length}
+        countdownText={countdownText}
       />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="mt-8">
 
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center justify-between mb-4">
 
-          <div>
-            <h1 className="text-5xl font-bold">
-              ❤️ Love Planner
-            </h1>
+          <h2 className="text-2xl font-bold">
+            📅 I nostri appuntamenti
+          </h2>
 
-            <p className="text-zinc-400 mt-2">
-              Il vostro spazio privato
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-
-            <button
-              onClick={logout}
-              className="
-                px-4
-                rounded-xl
-                border
-                border-zinc-700
-                hover:bg-zinc-800
-                transition
-              "
-            >
-              🚪
-            </button>
-
-            <button
-              onClick={() => setShowModal(true)}
-              className="
-                w-14
-                h-14
-                rounded-full
-                bg-gradient-to-r
-                from-pink-500
-                to-violet-500
-                text-3xl
-                font-bold
-                hover:scale-110
-                transition
-                shadow-xl
-              "
-            >
-              +
-            </button>
-
-          </div>
+          <span className="text-zinc-500 text-sm">
+            {appointments.length} eventi
+          </span>
 
         </div>
 
-        <WelcomeCard name="Alice" />
-
-        <LoveStats
-          daysTogether={daysTogether}
-          appointmentsCount={appointments.length}
-          countdownText={countdownText}
-        />
-
-        <div
-          className="
-            rounded-3xl
-            border
-            border-zinc-800
-            bg-zinc-900/60
-            backdrop-blur
-            p-6
-            mb-8
-          "
-        >
-          <p className="text-zinc-400 text-sm">
-            PROSSIMO APPUNTAMENTO
-          </p>
-
-          {nextAppointment ? (
-            <>
-              <h2 className="text-3xl font-bold mt-3">
-                {nextAppointment.emoji}{" "}
-                {nextAppointment.title}
-              </h2>
-
-              <p className="text-zinc-400 mt-3">
-                📅 {nextAppointment.date}
-              </p>
-
-              {nextAppointment.location && (
-                <p className="text-zinc-400">
-                  📍 {nextAppointment.location}
-                </p>
-              )}
-
-              <p className="text-pink-400 text-lg mt-4">
-                ⏳ {countdownText}
-              </p>
-            </>
-          ) : (
-            <p className="text-zinc-400 mt-4">
-              Nessun appuntamento programmato
-            </p>
-          )}
-        </div>
-
-        <h2 className="text-2xl font-bold mb-4">
-          📅 I nostri appuntamenti
-        </h2>
-
-        <div className="grid gap-4 mb-10">
+        <div className="grid gap-4">
 
           {[...appointments]
             .sort(
@@ -288,27 +281,55 @@ export default function Home() {
 
         </div>
 
-        <MemoriesSection />
-
       </div>
 
-      <AppointmentModal
-        show={showModal}
-        title={title}
-        date={date}
-        location={location}
-        notes={notes}
-        emoji={emoji}
-        favorite={favorite}
-        setTitle={setTitle}
-        setDate={setDate}
-        setLocation={setLocation}
-        setNotes={setNotes}
-        setEmoji={setEmoji}
-        setFavorite={setFavorite}
-        onClose={() => setShowModal(false)}
-        onSave={addAppointment}
-      />
+      <div className="mt-10">
+        <MemoriesSection />
+      </div>
+
     </div>
-  );
+
+    <button
+      onClick={() => setShowModal(true)}
+      className="
+        fixed
+        bottom-6
+        right-6
+        w-16
+        h-16
+        rounded-full
+        bg-gradient-to-r
+        from-pink-500
+        to-violet-500
+        text-4xl
+        font-bold
+        shadow-2xl
+        hover:scale-110
+        transition
+        z-50
+      "
+    >
+      +
+    </button>
+
+    <AppointmentModal
+      show={showModal}
+      title={title}
+      date={date}
+      location={location}
+      notes={notes}
+      emoji={emoji}
+      favorite={favorite}
+      setTitle={setTitle}
+      setDate={setDate}
+      setLocation={setLocation}
+      setNotes={setNotes}
+      setEmoji={setEmoji}
+      setFavorite={setFavorite}
+      onClose={() => setShowModal(false)}
+      onSave={addAppointment}
+    />
+
+  </div>
+);
 }
