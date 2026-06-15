@@ -10,12 +10,13 @@ import {
   addDoc,
   onSnapshot,
   query,
-  orderBy,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 
 
 type Appointment = {
-  id: number;
+  id: string;
   title: string;
   date: string;
   location: string;
@@ -36,14 +37,13 @@ export default function Home() {
 
 const [appointments, setAppointments] = useState<Appointment[]>([]);
 useEffect(() => {
-  const q = query(
-    collection(db, "appointments"),
-    orderBy("createdAt", "desc")
-  );
+const q = query(
+  collection(db, "appointments")
+);
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const data: Appointment[] = snapshot.docs.map((doc) => ({
-      id: Number(doc.id.replace(/\D/g, "")) || Date.now(),
+      id: doc.id,
       title: doc.data().title || "",
       date: doc.data().date || "",
       location: doc.data().location || "",
@@ -99,11 +99,18 @@ useEffect(() => {
   setShowModal(false);
 }
 
-  function deleteAppointment(id: number) {
-    setAppointments((prev) =>
-      prev.filter((a) => a.id !== id)
+async function deleteAppointment(id: string) {
+  try {
+    await deleteDoc(
+      doc(db, "appointments", id)
+    );
+  } catch (error) {
+    console.error(
+      "Errore eliminazione:",
+      error
     );
   }
+}
 
   function logout() {
     localStorage.removeItem("loggedIn");

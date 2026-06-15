@@ -1,5 +1,5 @@
 type Appointment = {
-  id: number;
+  id: string;
   title: string;
   date: string;
   location: string;
@@ -10,7 +10,7 @@ type Appointment = {
 
 type Props = {
   appointment: Appointment;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 };
 
 export default function AppointmentCard({
