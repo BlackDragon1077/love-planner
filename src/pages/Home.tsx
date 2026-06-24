@@ -13,6 +13,7 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
+import LoveCalendar from "../components/LoveCalendar";
 
 
 type Appointment = {
@@ -294,9 +295,11 @@ return (
 
       </div>
 
-      <div className="mt-10">
-        <MemoriesSection />
-      </div>
+      <LoveCalendar />
+
+<div className="mt-10">
+  <MemoriesSection />
+</div>
 
     </div>
 
